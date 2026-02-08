@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Love Journey - Prime Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      /* --- PRIME DESIGN SYSTEM --- */
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Montserrat', sans-serif;
+
+      --bg-dark: #0a0a0a;
+      --text-gold: #d4af37;
+      --text-white: #f5f5f5;
+      --glass-panel: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+
+      /* Default Theme (Chocolate) */
+      --theme-primary: #3E2723;
+      --theme-accent: #FFD54F;
+      --theme-text: #EFEBE9;
+    }
+
+    /* --- THEME DEFINITIONS --- */
+    body[data-theme="chocolate"] {
+      --theme-primary: #3E2723;
+      --theme-accent: #FFD54F;
+    }
+
+    body[data-theme="teddy"] {
+      --theme-primary: #5D4037;
+      --theme-accent: #F48FB1;
+    }
+
+    /* Warm Brown */
+    body[data-theme="promise"] {
+      --theme-primary: #1A237E;
+      --theme-accent: #82B1FF;
+    }
+
+    body[data-theme="hug"] {
+      --theme-primary: #BF360C;
+      --theme-accent: #FFAB91;
+    }
+
+    body[data-theme="kiss"] {
+      --theme-primary: #880E4F;
+      --theme-accent: #FF80AB;
+    }
+
+    body[data-theme="valentine"] {
+      --theme-primary: #B71C1C;
+      --theme-accent: #FFD700;
+    }
+
+    /* --- GLOBAL RESET --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: var(--font-body);
+      transition: background-color 1.5s ease;
+    }
+
+    /* Ambient Background */
+    .ambient-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, var(--theme-primary), #000);
+      opacity: 0.8;
+      transition: background 1.5s ease;
+      z-index: 0;
+    }
+
+    /* Pattern Overlay - Hidden for cleaner look */
+    .pattern-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* --- SPLIT LAYOUT GRID --- */
+    /* Timer Styles */
+    .timer-box {
+      display: none;
+      font-family: var(--font-display);
+      color: var(--theme-accent);
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeIn 1s ease;
+    }
+
+    .timer-digits {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .timer-label {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    .main-grid {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* LEFT SIDE: Typography & Controls */
+    .text-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8vw;
+      /* Responsive padding */
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease-out forwards 0.5s;
+    }
+
+    .super-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 8rem);
+      /* Massive scaling */
+      line-height: 0.9;
+      color: var(--theme-accent);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .quote-block {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.2rem, 2vw, 2rem);
+      color: var(--theme-text);
+      border-left: 2px solid var(--theme-accent);
+      padding-left: 20px;
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    .action-btn {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--theme-accent);
+      color: var(--theme-accent);
+      padding: 1.5rem 4rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--theme-accent);
+      transform: translateX(-101%);
+      transition: transform 0.4s;
+      z-index: -1;
+    }
+
+    .action-btn:hover {
+      color: #000;
+      box-shadow: 0 0 30px var(--theme-accent);
+    }
+
+    .action-btn:hover::after {
+      transform: translateX(0);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+
+    /* RIGHT SIDE: The Plant Stage */
+    .visual-section {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      /* Grounded */
+      padding-bottom: 5vh;
+    }
+
+    /* SVG & Animation */
+    svg#hero-plant {
+      height: 75vh;
+      width: auto;
+      max-width: 100%;
+      filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.6));
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .path-stem {
+      fill: none;
+      stroke: var(--theme-accent);
+      /* Dynamic Color */
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      transition: stroke-dashoffset 2.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 1s;
+      opacity: 0.8;
+    }
+
+    .path-leaf {
+      fill: var(--theme-accent);
+      opacity: 0;
+      transform-origin: center;
+      transform: scale(0);
+      transition: all 1s ease 0.5s;
+    }
+
+    .path-bloom {
+      opacity: 0;
+      transform-origin: center;
+      transform: scale(0);
+      transition: all 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      color: var(--theme-accent);
+      /* Default petal color */
+    }
+
+    /* States */
+    .grown {
+      stroke-dashoffset: 0;
+    }
+
+    .bloomed {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+
+    .visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* --- MOBILE LAYOUT (Responsive) --- */
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 45vh 1fr;
+        /* Top visual, Bottom Text */
+      }
+
+      .visual-section {
+        align-items: center;
+        padding-bottom: 0;
+      }
+
+      svg#hero-plant {
+        height: 40vh;
+        /* Smaller on mobile */
+      }
+
+      .text-section {
+        justify-content: flex-start;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .super-title {
+        margin-bottom: 1rem;
+      }
+
+      .quote-block {
+        margin: 0 auto 2rem auto;
+        border: none;
+        padding: 0;
+      }
+
+      .action-btn {
+        align-self: center;
+        width: 100%;
+        padding: 1rem;
+      }
+    }
+
+    /* --- CELEBRATION OVERLAY --- */
+    .overlay-celebration {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+
+    .overlay-celebration.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .cele-text {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 12rem);
+      color: var(--theme-accent);
+      text-align: center;
+      transform: scale(0.5);
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .overlay-celebration.active .cele-text {
+      transform: scale(1);
+      opacity: 1;
+      animation: pulseText 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseText {
+
+      0%,
+      100% {
+        transform: scale(1);
+        text-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+      }
+
+      50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 80px rgba(255, 215, 0, 1);
+      }
+    }
+
+    /* --- DEV TOOLS --- */
+    .dev-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 200;
+      opacity: 0.2;
+      transition: opacity 0.3s;
+    }
+
+    .dev-container:hover {
+      opacity: 1;
+    }
+
+    .dev-btn {
+      background: #000;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 5px 12px;
+      font-family: monospace;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="chocolate">
+
+  <div class="ambient-bg"></div>
+  <div class="pattern-overlay"></div>
+
+  <!-- Dev Tools -->
+
+
+  <!-- Celebration -->
+  <div class="overlay-celebration" id="celebration">
+    <h1 class="cele-text" id="celeTitle">Happy<br>Chocolate Day</h1>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-grid">
+    <!-- Text Section (Left) -->
+    <section class="text-section">
+      <h1 class="super-title" id="displayTitle">Chocolate<br>Day</h1>
+      <div class="quote-block">
+        <p id="displayQuote">"Life is sweet, but you are sweeter than any truffle."</p>
+      </div>
+
+      <!-- Countdown Timer -->
+      <div class="timer-box" id="timerContainer">
+        <div class="timer-digits" id="timerValue">00:00:00</div>
+        <div class="timer-label">Begins Soon</div>
+      </div>
+
+      <button class="action-btn" id="nurtureBtn" onclick="nurture()">Nurture Love ✦</button>
+    </section>
+
+    <!-- Visual Section (Right) -->
+    <section class="visual-section">
+      <svg id="hero-plant" viewBox="0 0 300 600" preserveAspectRatio="xMidYMax">
+
+        <!-- Luxury Vase/Chalice -->
+        <defs>
+          <linearGradient id="vaseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3E2723;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:#3E2723;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="soilGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2e1c16;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4a3228;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+
+        <!-- Soil Mound -->
+        <path d="M120 480 Q150 460 180 480" fill="url(#soilGrad)" />
+
+        <!-- Vase Body -->
+        <path d="M110 550 Q90 480 120 480 L180 480 Q210 480 190 550 L110 550 Z" fill="url(#vaseGrad)" />
+        <!-- Vase Rim Highlight -->
+        <path d="M120 480 Q150 490 180 480 Q150 470 120 480" fill="rgba(255,215,0,0.2)" stroke="rgba(255,215,0,0.5)"
+          stroke-width="0.5" />
+
+
+        <!-- Growing Stems (Curves) -->
+        <!-- Stage 1 -->
+        <path id="s1" class="path-stem" d="M150 480 Q150 440 150 400" />
+        <!-- Stage 2 -->
+        <path id="s2" class="path-stem" d="M150 400 Q120 360 140 320" />
+        <path id="l2" class="path-leaf" d="M140 360 Q110 350 110 330 Q140 340 140 360" />
+        <!-- Stage 3 -->
+        <path id="s3" class="path-stem" d="M140 320 Q160 280 150 240" />
+        <path id="l3" class="path-leaf" d="M150 300 Q180 290 180 270 Q150 280 150 300" />
+        <!-- Stage 4 -->
+        <path id="s4" class="path-stem" d="M150 240 Q140 200 150 158" />
+        <circle id="bud" class="path-leaf" cx="150" cy="160" r="10" />
+
+        <!-- Stage 6: The Rose Bloom (Side Profile) -->
+        <g transform="translate(150, 155)">
+          <g id="bloom" class="path-bloom">
+            <!-- Calyx (Green Base) -->
+            <path d="M-8 0 Q0 12 8 0 L0 8 Z" fill="#4CAF50" />
+            <path d="M-8 0 Q-12 -10 -6 -15" stroke="#4CAF50" stroke-width="2" fill="none" />
+            <path d="M8 0 Q12 -10 6 -15" stroke="#4CAF50" stroke-width="2" fill="none" />
+
+            <!-- Petals (Side View Stacking) -->
+            <!-- Center Core -->
+            <path d="M-8 -5 Q0 -25 8 -5 Q0 5 -8 -5" fill="currentColor" />
+
+            <!-- Inner Petals -->
+            <path d="M-8 -5 Q-15 -20 0 -30 Q15 -20 8 -5" fill="none" stroke="currentColor" stroke-width="2" />
+
+            <!-- Outer Petals (Unfurling) -->
+            <path d="M0 0 Q-20 -20 -10 -40 Q0 -30 10 -40 Q20 -20 0 0" fill="currentColor" opacity="0.8" />
+          </g>
+        </g>
+      </svg>
+    </section>
+  </main>
+
+  <script>
+    // --- DATA ---
+    const CONTENT = {
+      '-1': { id: 'chocolate', title: "Coming<br>Soon", quote: "The journey begins shortly..." },
+      0: { id: 'chocolate', title: "Chocolate<br>Day", quote: "Chocolate Day or not, you’re already my favorite little indulgence." },
+      1: { id: 'teddy', title: "Teddy<br>Day", quote: "Teddy Day feels unfair… you’re already stealing all the attention." },
+      2: { id: 'promise', title: "Promise<br>Day", quote: "I won’t promise forever — but I promise I won’t disappear on you." },
+      3: { id: 'hug', title: "Hug<br>Day", quote: "If this were in person, this is where I’d pull you into a hug and pretend it’s casual." },
+      4: { id: 'kiss', title: "Kiss<br>Day", quote: "Kiss Day exists and I’m trying very hard to behave." },
+      5: { id: 'valentine', title: "My<br>Valentine", quote: "You are the best thing I've never planned. Happy Valentine's Day." }
+    };
+
+    const START_DATE = new Date(2026, 1, 9); // Feb 9
+
+    // --- DOM ---
+    const ui = {
+      body: document.body,
+      title: document.getElementById('displayTitle'),
+      quote: document.getElementById('displayQuote'),
+      btn: document.getElementById('nurtureBtn'),
+      overlay: document.getElementById('celebration'),
+      celeTitle: document.getElementById('celeTitle'),
+      timerBox: document.getElementById('timerContainer'),
+      timerVal: document.getElementById('timerValue'),
+      stems: [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')],
+      leaves: [document.getElementById('l2'), document.getElementById('l3'), document.getElementById('bud')],
+      bloom: document.getElementById('bloom')
+    };
+
+    // --- LOGIC ---
+    function getStage() {
+      // Check debug override
+      const debug = localStorage.getItem('prime_debug_stage');
+      if (debug !== null) return parseInt(debug);
+
+      const now = new Date();
+      const current = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const start = new Date(START_DATE.getFullYear(), START_DATE.getMonth(), START_DATE.getDate());
+      let diff = Math.floor((current - start) / (1000 * 60 * 60 * 24));
+
+      if (diff < 0) diff = 0; if (diff > 5) diff = 5;
+      return diff;
+    }
+
+    function isWatered(stage) {
+      return localStorage.getItem('prime_watered_' + stage) === 'true';
+    }
+
+    function render(stage, watered) {
+      const data = CONTENT[stage] || CONTENT[5];
+
+      // 1. Text & Theme
+      ui.body.setAttribute('data-theme', data.id);
+      ui.title.innerHTML = data.title;
+      ui.quote.innerText = data.quote;
+      if (data.title) ui.celeTitle.innerHTML = "Happy<br>" + data.title.replace('<br>', ' ');
+
+      // 2. Pre-Start State (-1)
+      if (stage === -1) {
+        ui.timerBox.style.display = 'block';
+        ui.btn.style.display = 'none'; // Hide button, show timer
+        updateTimer(); // Start tick
+        // Clear existing interval if any to avoid multiples
+        if (window.timerInterval) clearInterval(window.timerInterval);
+        window.timerInterval = setInterval(updateTimer, 1000);
+      } else {
+        ui.timerBox.style.display = 'none';
+        ui.btn.style.display = 'block';
+        if (window.timerInterval) clearInterval(window.timerInterval);
+      }
+
+      // 3. Visual Growth
+      const visibleStage = watered ? stage : (stage - 1);
+
+      // Stems
+      if (visibleStage >= 0) ui.stems[0].classList.add('grown');
+      if (visibleStage >= 1) ui.stems[1].classList.add('grown');
+      if (visibleStage >= 2) ui.stems[2].classList.add('grown');
+      if (visibleStage >= 3) ui.stems[3].classList.add('grown');
+
+      // Leaves
+      if (visibleStage >= 1) ui.leaves[0].classList.add('bloomed');
+      if (visibleStage >= 2) ui.leaves[1].classList.add('bloomed');
+      if (visibleStage >= 4) ui.leaves[2].classList.add('bloomed'); // Bud
+
+      // Bloom
+      if (visibleStage >= 5) {
+        ui.leaves[2].style.opacity = '0'; // Hide bud
+        ui.bloom.classList.add('visible');
+        if (data.id === 'valentine') {
+          ui.bloom.style.color = '#D50000'; // Special mix for V-day
+          ui.bloom.style.filter = 'drop-shadow(0 0 20px #FFD700)';
+        } else {
+          ui.bloom.style.color = ''; // Use CSS default
+          ui.bloom.style.filter = '';
+        }
+      } else {
+        ui.bloom.classList.remove('visible');
+      }
+
+      // 4. Button State & Post-Event Logic
+      if (stage === -1) return; // Skip button logic for pre-start
+
+      if (watered) {
+        if (stage === 5) {
+          ui.btn.innerText = "Happy Valentine's Day! 🌹";
+          ui.btn.disabled = true;
+        } else if (stage > 5) {
+          ui.btn.innerText = "Can't wait till next year! 💖";
+          ui.btn.disabled = true;
+          // Optional: Override quote for post-event
+          ui.title.innerHTML = "Love<br>Lives On";
+          ui.quote.innerText = "Every day is Valentine's Day with you.";
+        } else {
+          ui.btn.innerText = "See you tomorrow ✦";
+          ui.btn.disabled = true;
+        }
+      } else {
+        if (stage > 5) {
+          // Auto-water state for post-event
+          render(stage, true);
+          return;
+        }
+        ui.btn.innerText = "Nurture Love ✦";
+        ui.btn.disabled = false;
+      }
+    }
+
+    // --- TIMER ---
+    function updateTimer() {
+      const now = new Date();
+      const start = new Date(START_DATE); // Feb 9 Midnight
+      const diff = start - now;
+
+      if (diff <= 0) {
+        location.reload(); // Refresh when time is up
+        return;
+      }
+
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+
+      ui.timerVal.innerText =
+        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // --- ACTIONS ---
+    window.nurture = function () {
+      const stage = getStage();
+      if (stage < 0 || stage > 5) return; // No action pre/post event
+      if (isWatered(stage)) return;
+
+      // 1. Trigger Overlay
+      ui.overlay.classList.add('active');
+
+      // 2. Logic
+      localStorage.setItem('prime_watered_' + stage, 'true');
+
+      // 3. Render Growth (behind overlay)
+      setTimeout(() => {
+        render(stage, true);
+      }, 500);
+
+      // 4. Hide Overlay
+      setTimeout(() => {
+        ui.overlay.classList.remove('active');
+      }, 3000);
+    };
+
+
+
+    // Init
+    function getStage() {
+      const now = new Date();
+      const current = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const start = new Date(START_DATE.getFullYear(), START_DATE.getMonth(), START_DATE.getDate());
+      let diff = Math.floor((current - start) / (1000 * 60 * 60 * 24));
+
+      if (diff < 0) diff = -1; // Allow pre-start
+      if (diff > 6) diff = 6; // Cap at Feb 15 (Post-Event state)
+      return diff;
+    }
+
+    render(getStage(), isWatered(getStage()));
+
+  </script>
+</body>
+
+</html>
